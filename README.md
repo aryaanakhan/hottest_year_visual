@@ -1,2 +1,2 @@
 # hottest_year_visual
-Using ggplot2, this project recreated a line plot displaying climate change by month and year based on NASA’s MERRA-2 Model data.
+This project utilizes NASA's MERRA-2 Model data and the ggplot2 R package to generate a line plot depicting anomalies in annual global mean temperatures from normalized values spanning from 1980 to 2016.
