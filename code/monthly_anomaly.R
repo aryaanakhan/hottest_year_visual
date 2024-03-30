@@ -1,10 +1,25 @@
-library(tidyverse)
+# Install from CRAN
+install.packages("tidyverse")
 
+# Open Working Directory
+setwd("Desktop")
+getwd()
+
+path_to_my_datafiles <- "Desktop/hottest_year_visual/"
+list.files(path = path_to_my_datafiles, 
+        pattern = NULL,
+     full.names = TRUE)
+
+
+library(tidyverse) 
+
+# Format merra2_seas_anom.txt
 month_anom<- read_table(file = "data/merra2_seas_anom.txt", skip = 3) %>%
   select(month = Month, seas_anom) %>%
   mutate(month = as.numeric(month), 
          month = month.abb[month])
 
+#Format GLB.Ts+dSST.csv
 t_data <- read_csv("data/GLB.Ts+dSST.csv", skip = 1, na = "*******") %>%
   select(year = Year, all_of(month.abb)) %>%
   pivot_longer(-year, names_to="month", values_to="t_diff") %>%
@@ -15,7 +30,7 @@ t_data <- read_csv("data/GLB.Ts+dSST.csv", skip = 1, na = "*******") %>%
   group_by(year) %>%
   mutate(ave= mean(month_anom)) %>%
   ungroup() %>%
-  mutate(ave = if_else(year == 2024, max(abs(ave)), ave))
+  mutate(ave = if_else(year == 2022, max(abs(ave)), ave))
 
 annotation <- t_data %>%
   slice_tail(n = 1)
@@ -45,7 +60,7 @@ p <- t_data %>%
 
 p +
   geom_point(data = annotation, aes(x=month, y=month_anom), size = 5) +
-  geom_text(data=annotation, aes(x=2.5, y=-1.95),
-            label="Jan 2024", hjust=1)
+  geom_text(data=annotation, aes(x=3.5, y=-1.95),
+            label="March 2022", hjust=1)
 
-ggsave("figures/monthly_anomaly.png", width=6, height=4, units="in")
+ggsave(visuals/monthly_anomaly.png", width=6, height=4, units="in")
